@@ -446,6 +446,18 @@ class SemTree(TAGTree):
             s.apply_semantic_binding(sem_rename_dict)
         return self
 
+    def sem_labeled(self):
+        t = self.copy()
+        for s in t.subtrees():
+            if str(s.semantics) != "":
+                s._label = s._label + ":" + str(s.semantics)
+        return t
+
+    def draw(self):
+        t = self.sem_labeled()
+        from nltk.draw.tree import draw_trees
+        draw_trees(t)
+
     def copy(self):
         new_tree = SemTree(self.label(), children=[c.copy() for c in self])
         new_tree.tree_name = self.tree_name

@@ -65,6 +65,10 @@ class VariableParser(object):
 def demo():
     semstr = "chased(during(e),x,y), Agent(e,x), Theme(e,y), ISA(x,CAT)"
     sem = SemanticParser.parse(semstr)
+    print(sem)
+    semstr = ""
+    sem = SemanticParser.parse(semstr)
+    print(sem)
 
 if __name__ == '__main__':
     demo()

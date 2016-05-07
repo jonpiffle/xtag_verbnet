@@ -8,6 +8,7 @@ from propbank import Propbank
 from derivation import DerivationTree
 from semantics import Semantics, VariableFactory, Constant, Relation, Token
 from tagtree import SemTree
+from semparser import SemanticParser
 
 class SemTreeGrammar(object):
     """
@@ -148,12 +149,47 @@ class SemTreeGrammar(object):
 
         tree = self.grammar.get(tree_name)
         tree.lexicalize(anchor)
+        tree = SemTree.convert(tree)
 
         if tree.initial():
             v = VariableFactory.get_var(pre=anchor[0])
         else:
             v = VariableFactory.get_var()
 
+        sem_default = ""
+        quant_default = {}
+
+        sem_map = {
+            "alphaNXN": {"sem": lambda v, a: "ISA(%s, %s)" % (v, a.upper())},
+            "betaAn": {"sem": lambda v, a: "ISA(%s, %s)" % (v, a.upper())},
+            "betaNn": {"sem": lambda v, a: "ISA(%s, %s)" % (v, a.upper())},
+            ("betaDnx", "a"): {"quant": lambda v: {v: Token.EXISTS}},
+            ("betaDnx", "an"): {"quant": lambda v: {v: Token.EXISTS}},
+            ("betaDnx", "the"): {"quant": lambda v: {v: Token.EXISTS}},
+            ("betaDnx", "one"): {"quant": lambda v: {v: Token.EXISTS}},
+        }
+
+
+        if (tree_name, anchor) in sem_map:
+            key = (tree_name, anchor)
+        elif tree_name in sem_map:
+            key = tree_name
+        else:
+            print(tree_name, anchor)
+            raise NotImplementedError
+
+        tree_data = sem_map[key]
+        sem_str = tree_data["sem"](v, anchor) if "sem" in tree_data else sem_default
+        quant = tree_data["quant"](v) if "quant" in tree_data else quant_default
+        
+        sem = SemanticParser.parse(sem_str)
+        sem.quantification_dict = quant
+        tree.semantics = sem
+        print(tree)
+        print(sem)
+        tree.sem_var = v
+
+        '''
         if tree_name in ["alphaNXN", "betaAn", "betaNn"]:
             con = Constant(inflection.titleize(anchor))
             rel = Relation("ISA", [v, con])
@@ -171,6 +207,7 @@ class SemTreeGrammar(object):
         else:
             print(tree_name, anchor)
             raise NotImplementedError
+        '''
 
         return tree
 
@@ -231,7 +268,10 @@ if __name__ == '__main__':
     chase_ps = chase_ps.adjoin(the_ps, 'NP_0')
     for sub in chase_ps.subtrees():
         print(sub.label(), sub.semantics)
+
+    chase_ps.draw()
     
+    '''
     deriv_trees = DerivationTree.load_all()
     tree_families = set(mapper.xtag_mapping.values())
     treeset = set([
@@ -246,5 +286,6 @@ if __name__ == '__main__':
     d = deriv_trees[0]
     print(d.file_num, d.sentence_num, d.anchor)
     parse_tree = d.get_parse_tree(s)
+    '''
 
     

@@ -3,7 +3,7 @@ import nltk, copy
 from collections import defaultdict
 from nltk.featstruct import FeatStruct
 
-from semantics import Semantics, Variable
+from semantics import Semantics, Variable, VariableBinding, CompoundVariable
 
 class TAGTree(nltk.ParentedTree):
     """
@@ -173,19 +173,8 @@ class TAGTree(nltk.ParentedTree):
         t2 = t2.copy()
         t2.rename(self.label_counts())
         assert not adj_node.subst and not adj_node.lex
-        if adj_node.prefix() != t2.prefix():
-            print(adj_node.label(), t2.label())
-            print(self.tree_name)
-            print(t2.tree_name)
-
         assert adj_node.prefix() == t2.prefix()
         foot = t2.foot_node()
-
-        if foot is None:
-            print(self.tree_name)
-            print(t2.tree_name)
-            self.draw()
-            t2.draw()
         assert foot is not None
 
         # Move children of adjunction node to foot node
@@ -340,35 +329,47 @@ class SemTree(TAGTree):
     def sem_suffixes_used(self):
         all_suffixes = defaultdict(set)
         for s in self.subtrees():
+
             suffixes = s.semantics.suffixes_used()
+            if s.sem_var is not None and isinstance(s.sem_var, CompoundVariable):
+                suffixes[s.sem_var.first.prefix()].add(s.sem_var.first.suffix()) 
+                suffixes[s.sem_var.second.prefix()].add(s.sem_var.second.suffix()) 
+            elif s.sem_var is not None:
+                suffixes[s.sem_var.prefix()].add(s.sem_var.suffix()) 
+
             for prefix, suffix_list in suffixes.items():
                 all_suffixes[prefix].update(suffix_list)
+
         return all_suffixes
 
     def apply_semantic_binding(self, binding):
         self.semantics.apply_binding(binding)
-        if self.sem_var in binding:
-            self.sem_var = binding[self.sem_var]
+        if self.sem_var is not None: 
+            self.sem_var = self.sem_var.apply_binding(binding)
         return self
 
     def substitute(self, tree2, label):
         tree2 = tree2.copy()
-        tree2.rename(self)
+        tree2.rename(self) 
 
-        ### Syntax ###
         sub_node = self.find(label)
         assert sub_node.subst
         assert sub_node.prefix() == tree2.prefix()
+
+        ### Semantics ###
+        rename_dict = VariableBinding({sub_node.variable(): tree2.variable()})
+        sub_node.semantics = sub_node.semantics.concat(tree2.semantics)
+        node = sub_node
+        while node is not None:
+            node.apply_semantic_binding(rename_dict)
+            node = node.parent()
+        ######
+
+        ### Syntax ###
         for c in tree2:
             sub_node.append(c)
         sub_node.subst = False
-
-        ### Semantics ###
-        rename_dict = {sub_node.variable().name: tree2.variable().name}
-        sub_node.semantics = sub_node.semantics.concat(tree2.semantics)
-        while sub_node is not None:
-            sub_node.apply_semantic_binding(rename_dict)
-            sub_node = sub_node.parent()
+        #######
 
         return self
 
@@ -377,7 +378,6 @@ class SemTree(TAGTree):
         tree2.foot_node()._label = label # Force foot to lose the _f name scheme
         tree2.rename(self) 
 
-        ### Syntax ###
         adj_node = self.find(label)
         foot = tree2.foot_node()
         assert adj_node is not None
@@ -385,6 +385,31 @@ class SemTree(TAGTree):
         assert adj_node.prefix() == tree2.prefix()
         assert foot is not None
 
+        ### Semantics ###
+        # foot_node represents the entity of the adj_node, so want to
+        # update it foot_node entity everywhere in auxiliary tree
+        rename_dict = VariableBinding({foot.variable(): adj_node.variable()})
+        for s in tree2.subtrees():
+            s.apply_semantic_binding(rename_dict)
+
+        # adj_node entity becomes the root of the auxiliary tree
+        # this is usually the foot node, but can be a "complex" (AND/OR) entity
+        # that contains the foot entity
+        adj_node.sem_var = tree2.sem_var
+
+        # Update parent nodes if foot and root are different (compound var)
+        node = adj_node.parent()
+        rename_dict = VariableBinding({foot.variable(): adj_node.variable()})
+        while node is not None:
+            node.apply_semantic_binding(rename_dict)
+            node = node.parent()
+
+        # Update where the semantics go
+        foot.semantics = adj_node.semantics
+        adj_node.semantics = tree2.semantics
+        ###########
+
+        ### Syntax ###
         # Move children of adjunction node to foot node
         for c in adj_node:
             foot.append(c) 
@@ -397,20 +422,15 @@ class SemTree(TAGTree):
         for c in tree2:
             adj_node.append(c)
         foot.foot = False
+        ###############
 
-        ### Semantics ###
-        rename_dict = {tree2.variable().name: adj_node.variable().name}
-        for s in tree2.subtrees():
-            s.apply_semantic_binding(rename_dict)
-        adj_node.semantics = adj_node.semantics.concat(tree2.semantics)
-
-        # Quantifiers 
+        ### Quantifiers ###
         if tree2.sem_var_quant is not None:
             node = adj_node
             while node.sem_var is not None:
                 node = node.parent()
             node.sem_var_quant = tree2.sem_var_quant
-            node.semantics.set_quantification(tree2.sem_var_quant)
+            node.semantics.set_quantification(tree2.sem_var_quant) # TODO: this doesn't look right...
 
         return self
 
@@ -422,7 +442,7 @@ class SemTree(TAGTree):
         be applied to (via substitution or adjunction)
         """               
         label_counts = tree1.label_counts()
-        sem_rename_dict = {}
+        sem_rename_dict = VariableBinding()
         suffixes_used = tree1.sem_suffixes_used()
 
         for s in self.subtrees(lambda s: not s.lex):
@@ -433,13 +453,12 @@ class SemTree(TAGTree):
                 s._label = new_label
 
             ### Update Semantics ###
-            additional_renames = s.semantics.get_rename_dict(suffixes_used)
+            additional_renames = s.semantics.get_rename_dict(suffixes_used, sem_var=s.sem_var)
 
             # Need to update suffixes used when we add a new one
             for old, new in additional_renames.items():
                 if old not in sem_rename_dict:
-                    new = Variable(new)
-                    sem_rename_dict[old] = new.name
+                    sem_rename_dict[old] = new
                     suffixes_used[new.prefix()].add(new.suffix())
 
             # update semantics
@@ -447,16 +466,25 @@ class SemTree(TAGTree):
         return self
 
     def sem_labeled(self):
+        """Return tree with labels that include semantics"""
         t = self.copy()
         for s in t.subtrees():
+            if s.sem_var is not None:
+                s._label = s._label + ":" + str(s.sem_var)
             if str(s.semantics) != "":
-                s._label = s._label + ":" + str(s.semantics)
+                s._label = s._label + "--" + str(s.semantics)
         return t
 
     def draw(self):
         t = self.sem_labeled()
         from nltk.draw.tree import draw_trees
         draw_trees(t)
+
+    def full_semantics(self):
+        relations = []
+        for s in self.subtrees():
+            relations += s.semantics.relations
+        return Semantics(relations)
 
     def copy(self):
         new_tree = SemTree(self.label(), children=[c.copy() for c in self])
@@ -470,8 +498,8 @@ class SemTree(TAGTree):
         new_tree.must_adjoin = self.must_adjoin
         new_tree.deriv_depth = self.deriv_depth
         new_tree.fs = self.fs
-        new_tree.semantics = self.semantics
-        new_tree.sem_var = self.sem_var
+        new_tree.semantics = copy.deepcopy(self.semantics)
+        new_tree.sem_var = copy.deepcopy(self.sem_var)
         new_tree.sem_var_quant = self.sem_var_quant
         return new_tree
 

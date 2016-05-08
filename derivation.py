@@ -16,7 +16,8 @@ class DerivationTree(nltk.Tree):
 
     def have_semantics(self, grammar, tree_families, tree_set):
         """Returns True if every elem tree in self is in tree_set (annotated)"""
-        return all((grammar.get(s.tree_name, copy=False).tree_family in tree_families or s.tree_name in tree_set) for s in self.subtrees())
+        trees = [grammar.get(s.tree_name) for s in self.subtrees()]
+        return all(t is not None and (t.tree_family in tree_families or t.tree_name in tree_set) for t in trees)
 
     def get_parse_tree(self, semgrammar, depth=0):
         if semgrammar.grammar.get(self.tree_name, copy=False).belongs_to_verb_family():

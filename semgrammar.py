@@ -6,9 +6,9 @@ from grammar import Grammar
 from verbnet import VerbNet, XTAGMapper
 from propbank import Propbank
 from derivation import DerivationTree
-from semantics import Semantics, VariableFactory, Constant, Relation, Token
+from semantics import Semantics, VariableFactory, Constant, Relation, Token, Variable
 from tagtree import SemTree
-from semparser import SemanticParser
+from semparser import SemanticParser, VariableParser
 
 class SemTreeGrammar(object):
     """
@@ -26,21 +26,26 @@ class SemTreeGrammar(object):
         self.grammar = grammar
         self.xtag_mapper = xtag_mapper
         self.propbank = propbank
+        self.sem_trees = {}
 
     def get_semtree(self, tree_name, anchor, lemma=None, pb_instance=None):
+        if (tree_name, anchor) in self.sem_trees:
+            return self.sem_trees[(tree_name, anchor)].copy()
+
         tree = self.grammar.get(tree_name)
         if not tree.belongs_to_verb_family():
-            return self.get_nonverb_semtree(tree_name, anchor)
-
-        if pb_instance is not None:
+            sem_tree = self.get_nonverb_semtree(tree_name, anchor)
+        elif pb_instance is not None:
             verb_trees = self.get_semtrees_from_pb_instance(tree_name, anchor, pb_instance)
+            sem_tree = verb_trees[0] # Don't have any better way to choose at this point 
         elif lemma is not None:
             verb_trees = self.get_semtrees_from_lemma(tree_name, anchor, lemma)
+            sem_tree = verb_trees[0] # Don't have any better way to choose at this point 
         else:
             assert False
 
-        # Don't have any better way to choose at this point 
-        return verb_trees[0] 
+        self.sem_trees[(tree_name, anchor)] = sem_tree
+        return sem_tree.copy()
 
     def get_semtrees_from_lemma(self, tree_name, anchor, lemma):
         frames = self.verbnet.get_frames(lemma)
@@ -104,7 +109,8 @@ class SemTreeGrammar(object):
         for node_label, np_var in node_entity_dict.items():
             subst_node = tree.find(node_label)
             if subst_node is not None:
-                subst_node.semantics = sem_dict[np_var.name]
+                #subst_node.semantics = sem_dict[np_var.name]
+                tree.semantics = tree.semantics.concat(sem_dict[np_var.name])
                 subst_node.sem_var = np_var
 
         # Check for PRO trees
@@ -151,22 +157,107 @@ class SemTreeGrammar(object):
         tree.lexicalize(anchor)
         tree = SemTree.convert(tree)
 
+        '''
         if tree.initial():
             v = VariableFactory.get_var(pre=anchor[0])
         else:
             v = VariableFactory.get_var()
-
-        sem_default = ""
-        quant_default = {}
+        '''
 
         sem_map = {
-            "alphaNXN": {"sem": lambda v, a: "ISA(%s, %s)" % (v, a.upper())},
-            "betaAn": {"sem": lambda v, a: "ISA(%s, %s)" % (v, a.upper())},
-            "betaNn": {"sem": lambda v, a: "ISA(%s, %s)" % (v, a.upper())},
-            ("betaDnx", "a"): {"quant": lambda v: {v: Token.EXISTS}},
-            ("betaDnx", "an"): {"quant": lambda v: {v: Token.EXISTS}},
-            ("betaDnx", "the"): {"quant": lambda v: {v: Token.EXISTS}},
-            ("betaDnx", "one"): {"quant": lambda v: {v: Token.EXISTS}},
+            "alphaNXN": {
+                "NP": (lambda a: "", "x1"),
+                "N": (lambda a: "ISA(x1, %s)" % a.upper(), "x1"),
+            },
+            "betaAn": {
+                "N_r": (lambda a: "ISA(x1, %s)" % a.upper(), "x1"),
+                "N_f": (lambda a: "", "x1"),
+            },
+            "betaNn": {
+                "N_r": (lambda a: "ISA(x1, %s)" % a.upper(), "x1"),
+                "N_f": (lambda a: "", "x1"),
+            },
+            ("betaDnx", "a"): {
+                "NP_r": (lambda a: "EXISTS(x1)|", "x1"),
+                "NP_f": (lambda a: "", "x1"),
+            },
+            ("betaDnx", "an"): {
+                "NP_r": (lambda a: "EXISTS(x1)|", "x1"),
+                "NP_f": (lambda a: "", "x1"),
+            },
+            ("betaDnx", "the"): {
+                "NP_r": (lambda a: "EXISTS(x1)|", "x1"),
+                "NP_f": (lambda a: "", "x1"),
+            },
+            ("betaDnx", "one"): {
+                "NP_r": (lambda a: "EXISTS(x1)|", "x1"),
+                "NP_f": (lambda a: "", "x1"),
+            },
+            "betaVvx": {
+                "VP_r": (lambda a: "", "x1"),
+                "VP": (lambda a: "", "x1"),
+            },
+            "betanxPnx": {
+                "NP_r": (lambda a: "%s(x1, y1)" % a, "x1"),
+                "NP": (lambda a: "", "y1"),
+                "NP_f": (lambda a: "", "x1"),
+            },
+            "betavxPnx": {
+                "VP_r": (lambda a: "%s(x1, y1)" % a, "x1"),
+                "NP": (lambda a: "", "y1"),
+                "VP": (lambda a: "", "x1"),
+            },
+            "betasPUs": {
+                "S_r": (lambda a: "", "AND(x1,y1)"),
+                "S_f": (lambda a: "", "x1"),
+                "S_1": (lambda a: "", "y1"),
+            },
+            "betaARBvx": {
+                "VP": (lambda a: "", "x1"),
+                "VP_r": (lambda a: "%s(x1)" % a, "x1"),
+            },
+            "betanxPUnx": {
+                "NP_f": (lambda a: "", "x1"),
+                "NP_r": (lambda a: "equal(x1,y1)", "x1"),
+                "NP": (lambda a: "", "y1"),
+            },
+            "betaPUs": {
+                "S_r": (lambda a: "", "x1"),
+                "S": (lambda a: "", "x1"),
+            },
+            "betaVs": {
+                "S_r": (lambda a: "", "x1"),
+                "S": (lambda a: "", "x1"),
+            },
+            "betanx1CONJnx2": {
+                "NP": (lambda a: "", "AND(x1,y1)"),
+                "NP_1": (lambda a: "", "x1"),
+                "NP_2": (lambda a: "", "y1"),
+            },
+            "betanxGnx": {
+                "NP_r": (lambda a: "EXISTS(x1)|belongs_to(x1,y1)", "x1"),
+                "NP_f": (lambda a: "", "x1"),
+                "NP": (lambda a: "", "y1"),
+            },
+            "betavxPs": {
+                "VP_r": (lambda a: "", "x1"),
+                "VP_f": (lambda a: "", "x1"),
+                "PP": (lambda a: "%s(x1, y1)" % a, "y1"),
+                "S": (lambda a: "", "y1"),
+            },
+            "betas1CONJs2": {
+                "S": (lambda a: "", "AND(x1,y1)"),
+                "S_1": (lambda a: "", "x1"),
+                "S_2": (lambda a: "", "y1"),
+            },
+            "betaARBs": {
+                "S": (lambda a: "", "x1"),
+                "S_r": (lambda a: "%s(x1)" % a, "x1"),
+            },
+            "betaCONJs": {
+                "S_c": (lambda a: "", "x1"),
+                "S_r": (lambda a: "", "x1"),
+            },
         }
 
 
@@ -178,85 +269,24 @@ class SemTreeGrammar(object):
             print(tree_name, anchor)
             raise NotImplementedError
 
-        tree_data = sem_map[key]
-        sem_str = tree_data["sem"](v, anchor) if "sem" in tree_data else sem_default
-        quant = tree_data["quant"](v) if "quant" in tree_data else quant_default
-        
-        sem = SemanticParser.parse(sem_str)
-        sem.quantification_dict = quant
-        tree.semantics = sem
-        print(tree)
-        print(sem)
-        tree.sem_var = v
-
-        '''
-        if tree_name in ["alphaNXN", "betaAn", "betaNn"]:
-            con = Constant(inflection.titleize(anchor))
-            rel = Relation("ISA", [v, con])
-            s = Semantics([rel])
-            tree = SemTree.convert(tree)
-            tree.semantics = s
-            tree.sem_var = v
-        elif tree_name == "betaDnx" and anchor in ["a", "an", "the", "one"]:
-            s = Semantics([])
-            s.set_quantification(v, Token.EXISTS)
-            node_entity_dict = {s.label(): v for s in tree.subtrees()}
-            tree = SemTree.convert(tree)
-            tree.semantics = s
-            tree.sem_var = v
-        else:
-            print(tree_name, anchor)
-            raise NotImplementedError
-        '''
+        node_dict = sem_map[key]
+        for node_label, (sem_str, var_str) in node_dict.items():
+            sem_str = sem_str(anchor)
+            node = tree.find(node_label)
+            node.semantics = SemanticParser.parse(sem_str)
+            var, rest = VariableParser.parse(var_str)
+            node.sem_var = var
 
         return tree
 
 if __name__ == '__main__':
-    '''
     g = Grammar.load()
     vnet = VerbNet.load()
     mapper = XTAGMapper.load()
     propbank = Propbank.load()
     s = SemTreeGrammar(g, vnet, mapper, propbank)
-    print(len(propbank.instance_dict))
 
-    chase_ps = s.get_semtree('alphanx0Vnx1', 'chased', lemma='chase')
-    dog_ps = s.get_semtree('alphaNXN', 'dog')
-    cat_ps = s.get_semtree('alphaNXN', 'cat')
-    red_ps = s.get_semtree('betaAn', 'red')
-    pet_ps = s.get_semtree('betaNn', 'pet')
-    the_ps = s.get_semtree('betaDnx', 'a')
-    ps = chase_ps.substitute(dog_ps, "NP_0")
-    ps = ps.substitute(cat_ps, "NP_1")
-    ps = ps.adjoin(red_ps, "N")
-    ps = ps.adjoin(pet_ps, "N-1")
-    ps = ps.adjoin(the_ps, "NP_0")
-    print(ps)
-    ps.tree.draw()
-    print()
-
-    deriv_trees = DerivationTree.load_all()
-
-    tree_families = set(mapper.xtag_mapping.values())
-    treeset = set([
-        "alphaNXN",
-        "betaAn",
-        "betaNn",
-        "betaDnx"
-
-    ])
-    deriv_trees = [d for d in deriv_trees if d.have_semantics(g, tree_families, treeset)]
-    print(len(deriv_trees))
-    d = deriv_trees[6]
-    print(d.file_num, d.sentence_num, d.anchor)
-    parse_tree = d.get_parse_tree(s)
     '''
-
-    g = Grammar.load()
-    vnet = VerbNet.load()
-    mapper = XTAGMapper.load()
-    propbank = Propbank.load()
-    s = SemTreeGrammar(g, vnet, mapper, propbank)
     chase_ps = s.get_semtree('alphanx0Vnx1', 'chase', lemma='chase')
     cat_ps = s.get_semtree('alphaNXN', 'cat')
     dog_ps = s.get_semtree('alphaNXN', 'dog')
@@ -268,10 +298,8 @@ if __name__ == '__main__':
     chase_ps = chase_ps.adjoin(the_ps, 'NP_0')
     for sub in chase_ps.subtrees():
         print(sub.label(), sub.semantics)
-
     chase_ps.draw()
-    
-    '''
+
     deriv_trees = DerivationTree.load_all()
     tree_families = set(mapper.xtag_mapping.values())
     treeset = set([
@@ -288,4 +316,35 @@ if __name__ == '__main__':
     parse_tree = d.get_parse_tree(s)
     '''
 
-    
+    tree_families = set(mapper.xtag_mapping.values())
+    trees = set([
+        "alphaNXN",
+        "betaAn",
+        "betaNn",
+        "betaDnx",
+        "betaVvx",
+        "betanxPnx",
+        "betavxPnx",
+        "betasPUs",
+        "betaARBvx",
+        "betanxPUnx",
+        "betaPUs",
+        "betaVs",
+        "betaPUs", # 2628 
+        "betanx1CONJnx2", # 2568 
+        "betanxGnx", # 2489 
+        "betavxPs", # 2299 
+        "betas1CONJs2", # 2169 
+        "betaARBs", # 2015 
+        "betaCONJs", # 1966 
+    ])
+
+    count = 0
+    deriv_trees = DerivationTree.load_all()
+    for deriv in deriv_trees:
+        if deriv.have_semantics(g, tree_families, trees):
+            count += 1
+    print("have semantics for %d of %d" % (count, len(deriv_trees)))
+
+
+            

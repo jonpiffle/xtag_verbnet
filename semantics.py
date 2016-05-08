@@ -1,6 +1,30 @@
-import nltk, re
+import nltk, re, itertools, copy
 
 from collections import defaultdict
+
+class VariableBinding(object):
+    def __init__(self, binding=None):
+        if binding is None:
+            binding = {}
+
+        self.binding = {}
+        for k,v in binding.items():
+            self[k] = v
+
+    def items(self):
+        return self.binding.items()
+
+    def __setitem__(self, key, value):
+        self.binding[key.copy()] = value.copy()
+
+    def __contains__(self, key):
+        return key in self.binding
+
+    def __getitem__(self, key):
+        return self.binding[key].copy()
+
+    def __str__(self):
+        return str(self.binding)
 
 class VariableFactory(object):
     """
@@ -16,6 +40,10 @@ class VariableFactory(object):
         pre = pre.lower()
         cls.count_dict[pre] += 1
         return Variable('%s%d' % (pre, cls.count_dict[pre]))
+
+    @classmethod
+    def reset(cls):
+        cls.count_dict = defaultdict(int)
 
 class Token(object):
     EXISTS = u"\u2203"
@@ -34,7 +62,7 @@ class Semantics(object):
         self.quantification_dict = {}
 
     def set_quantification(self, v, quant):
-        self.quantification_dict[v.name] = quant
+        self.quantification_dict[v] = quant
 
     def event(self):
         """Returns any 'event' variables in the semantics"""
@@ -43,7 +71,7 @@ class Semantics(object):
 
     def variables(self):
         """Returns all variables in all subexpressions"""
-        return [v for r in self.relations for v in r.variables()]
+        return set([v for r in self.relations for v in r.variables()])
 
     def concat(self, other):
         """Returns new semantics formed by concatenating other to self"""
@@ -75,8 +103,7 @@ class Semantics(object):
         self.quantification_dict = new_quant_dict
 
         # And need to update all relations
-        for r in self.relations:
-            r.apply_binding(rename_dict)
+        self.relations = [r.apply_binding(rename_dict) for r in self.relations]
         return self
 
     def suffixes_used(self):
@@ -89,19 +116,47 @@ class Semantics(object):
             suffixes[v.prefix()].add(v.suffix())
         return suffixes
 
-    def get_rename_dict(self, suffixes_used):
+    def get_rename_dict(self, suffixes_used, sem_var=None):
         """
         Returns a rename dictionary specifying what each variable with a conflict
         should be renamed to in order to avoid conflicts with the suffixes used
         """
-        rename_dict = {}
-        for v in self.variables():
+        rename_dict = VariableBinding()
+        variables = self.variables()
+        if sem_var is not None and isinstance(sem_var, CompoundVariable):
+            variables.add(sem_var.first)
+            variables.add(sem_var.second)
+        elif sem_var is not None:
+            variables.add(sem_var)
+
+        for v in variables:
             if v.suffix() in suffixes_used[v.prefix()]:
                 new_suffix = max(suffixes_used[v.prefix()]) + 1
                 new_var_name = v.prefix() + str(new_suffix)
                 suffixes_used[v.prefix()].add(new_suffix)
-                rename_dict[v.name] = new_var_name
+                rename_dict[v] = Variable(new_var_name)
         return rename_dict
+
+    def __eq__(self, other):
+        return set([str(r) for r in self.relations]) == set([str(r) for r in other.relations])
+
+    def equiv(self, other):
+        ents1 = set(v.name for v in self.variables())
+        ents2 = set(v.name for v in other.variables())
+
+        if len(ents1) != len(ents2):
+            return False
+        if len(ents1) == 0:
+            return True
+
+        for entity_perm in itertools.permutations(ents1):
+            binding = zip(entity_perm, ents2)
+            binding = {Variable(e1): Variable(e2) for e1, e2 in binding}
+            binding = VariableBinding(binding)
+            bound = copy.deepcopy(self).apply_binding(binding)
+            if bound == other:
+                return True
+        return False
 
     @classmethod
     def semdict_fromxml(cls, xml):
@@ -143,23 +198,23 @@ class Semantics(object):
 
         # Clean up the semantics and separate by dominating variable
         sem_dict = defaultdict(list)
-        rename_dict = {}
+        rename_dict = VariableBinding()
         for rel in rels:
             event = rel.event() 
 
             # Event starts out as capital (E, E1, etc) so want to map it to
             # lowercase (e1, e2, etc)
-            if event.name not in rename_dict:
+            if event not in rename_dict:
                 new_event = VariableFactory.get_var(pre='e')
-                rename_dict[event.name] = new_event.name
+                rename_dict[event] = new_event
 
             for v in rel.variables():
-                if v.name in rename_dict or v.arg_type == "Constant":
+                if v in rename_dict or v.arg_type == "Constant":
                     continue
 
                 # Map "Agent" to "a1", etc.
                 new_var = VariableFactory.get_var(pre=v.name[0])
-                rename_dict[v.name] = new_var.name
+                rename_dict[v] = new_var
 
                 # These are the variables that need to be broken out into
                 # relations. ie Agent -> Agent(e1, a1)
@@ -167,8 +222,8 @@ class Semantics(object):
                 # subst node assigned to a1
                 if v.arg_type == "ThemRole":
                     new_rel = Relation(v.name, [Variable(event.name, arg_type="Event"), new_var])
-                    new_v = rename_dict[v.name]
-                    sem_dict[new_v].append(new_rel)
+                    new_v = rename_dict[v]
+                    sem_dict[new_v.name].append(new_rel)
 
                 # This is for information conveyed by the specific lexicalization
                 # of a verb class. A dummy placeholder is used until the anchor 
@@ -189,6 +244,7 @@ class Constant(object):
     """Class representing an FOL symbol/constant"""
 
     def __init__(self, name):
+        assert isinstance(name, str)
         self.name = name
 
     def apply_binding(self, rename_dict):
@@ -198,13 +254,22 @@ class Constant(object):
         such as allowing for specific anchors to make contributions to a more
         general frame, via a placeholder
         """
-
-        if self.name in rename_dict:
-            self.name = rename_dict[self.name]
+        assert isinstance(rename_dict, VariableBinding)
+        if self in rename_dict:
+            return rename_dict[self]
         return self
 
+    def copy(self):
+        return Constant(self.name)
+
+    def __eq__(self, o):
+        return isinstance(o, Variable) and o.name == self.name
+
+    def __hash__(self):
+        return hash(str(self))
+
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     def __repr__(self):
         return str(self)
@@ -212,6 +277,7 @@ class Constant(object):
 class Variable(object):
     """Class representing an FOL variable"""
     def __init__(self, name, arg_type=None, event_type=None):
+        assert isinstance(name, str)
         self.name = name
         self.orig_name = name
         self.arg_type = arg_type # This is useful when parsing from verbnet
@@ -220,8 +286,9 @@ class Variable(object):
 
     def apply_binding(self, rename_dict):
         """Returns self after renaming, if necessary"""
-        if self.name in rename_dict:
-            self.name = rename_dict[self.name]
+        assert isinstance(rename_dict, VariableBinding)
+        if self in rename_dict:
+            return rename_dict[self]
         return self
 
     def prefix(self):
@@ -236,10 +303,16 @@ class Variable(object):
         else:
             return int(match.group(1))
 
+    def copy(self):
+        new_var = Variable(self.name, self.arg_type, self.event_type)
+        new_var.orig_name = self.orig_name
+        new_var.missing = self.missing
+        return new_var
+
     def __str__(self):
-        if self.event_type is not None:
-            return "%s(%s)" % (self.event_type, self.name)
-        return self.name
+        #if self.event_type is not None:
+        #    return "%s(%s)" % (str(self.event_type), str(self.name))
+        return str(self.name)
 
     def __repr__(self):
         return str(self)
@@ -248,25 +321,31 @@ class Variable(object):
         return isinstance(o, Variable) and o.name == self.name
 
     def __hash__(self):
-        return hash(str(self))
+        return hash(self.name)
 
-class AndVariable(Variable):
-    def __init__(self, name, first, second):
-        self.name = name
+class CompoundVariable(Variable):
+    def __init__(self, first, second):
         self.first = first
         self.second = second
 
-    def __str__(self):
-        return "AND(%s,%S)" % (str(self.first), str(self.second))
+    def apply_binding(self, rename_dict):
+        self.first = self.first.apply_binding(rename_dict)
+        self.second = self.second.apply_binding(rename_dict)
+        return self
 
-class OrVariable(Variable):
-    def __init__(self, name, first, second):
-        self.name = name
-        self.first = first
-        self.second = second
+class AndVariable(CompoundVariable):
+    def copy(self):
+        return AndVariable(self.first, self.second)
 
     def __str__(self):
-        return "OR(%s,%S)" % (str(self.first), str(self.second))
+        return "AND(%s,%s)" % (str(self.first), str(self.second))
+
+class OrVariable(CompoundVariable):
+    def copy(self):
+        return OrVariable(self.first, self.second)
+
+    def __str__(self):
+        return "OR(%s,%s)" % (str(self.first), str(self.second))
 
 class Relation(object):
     """
@@ -281,12 +360,11 @@ class Relation(object):
 
     def variables(self):
         """Returns list of all variables in relation (may be deeply nested)"""
-        return [v for v in self.args if isinstance(v, Variable)]
+        return set([v for v in self.args if isinstance(v, Variable) and not isinstance(v, CompoundVariable)])
 
     def apply_binding(self, rename_dict):
         """Returns self after renaming all variables (if necessary)"""
-        for a in self.args:
-            a.apply_binding(rename_dict)
+        self.args = [a.apply_binding(rename_dict) for a in self.args]
         return self
 
     def event(self):

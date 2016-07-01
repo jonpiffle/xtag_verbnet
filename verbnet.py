@@ -20,6 +20,9 @@ class VerbNet(object):
     def get_frames_from_class(self, class_id):
         if class_id in self.class_id_dict:
             class_id = self.class_id_dict[class_id]
+        if class_id == '-':
+            return []
+
         return self.class_to_frames[class_id]
 
     def get_frames(self, lemma, class_id=None):

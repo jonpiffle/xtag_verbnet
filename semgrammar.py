@@ -9,6 +9,7 @@ from derivation import DerivationTree
 from semantics import Semantics, VariableFactory, Constant, Relation, Token, Variable
 from tagtree import SemTree
 from semparser import SemanticParser, VariableParser
+from vnet_constants import DATA_DIR
 
 class SemTreeGrammar(object):
     """
@@ -287,7 +288,18 @@ if __name__ == '__main__':
     s = SemTreeGrammar(g, vnet, mapper, propbank)
 
     '''
-    chase_ps = s.get_semtree('alphanx0Vnx1', 'chase', lemma='chase')
+    jump = s.get_semtree('alphanx0Vnx1', 'jumped', lemma='run')
+    tree_families = set(mapper.xtag_mapping.values())
+    all_trees = set()
+    for tf in tree_families:
+        all_trees.update([t.tree_name for t in g.get_trees_from_tree_family(tf)])
+        print(tf)
+    #for tree_name in sorted(all_trees):
+    #    print(tree_name)
+    '''
+
+    '''
+    chase_ps = s.get_semtree('alphanx0Vnx1', 'jump', lemma='run')
     cat_ps = s.get_semtree('alphaNXN', 'cat')
     dog_ps = s.get_semtree('alphaNXN', 'dog')
     red_ps = s.get_semtree('betaAn', 'red')
@@ -299,21 +311,6 @@ if __name__ == '__main__':
     for sub in chase_ps.subtrees():
         print(sub.label(), sub.semantics)
     chase_ps.draw()
-
-    deriv_trees = DerivationTree.load_all()
-    tree_families = set(mapper.xtag_mapping.values())
-    treeset = set([
-        "alphaNXN",
-        "betaAn",
-        "betaNn",
-        "betaDnx"
-
-    ])
-    deriv_trees = [d for d in deriv_trees if d.have_semantics(g, tree_families, treeset)]
-    print(len(deriv_trees))
-    d = deriv_trees[0]
-    print(d.file_num, d.sentence_num, d.anchor)
-    parse_tree = d.get_parse_tree(s)
     '''
 
     tree_families = set(mapper.xtag_mapping.values())
@@ -340,11 +337,10 @@ if __name__ == '__main__':
     ])
 
     count = 0
-    deriv_trees = DerivationTree.load_all()
+    deriv_trees = DerivationTree.load_all(treedir=DATA_DIR + 'revised_parse_trees')
     for deriv in deriv_trees:
         if deriv.have_semantics(g, tree_families, trees):
             count += 1
     print("have semantics for %d of %d" % (count, len(deriv_trees)))
-
 
             

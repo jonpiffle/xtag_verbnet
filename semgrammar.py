@@ -34,7 +34,10 @@ class SemTreeGrammar(object):
             return self.sem_trees[(tree_name, anchor)].copy()
 
         tree = self.grammar.get(tree_name)
-        if not tree.belongs_to_verb_family():
+        if len(tree.anchor_positions()) > 1:
+            #print("NotImplementedError", tree.tree_family)
+            raise NotImplementedError
+        elif not tree.belongs_to_verb_family():
             sem_tree = self.get_nonverb_semtree(tree_name, anchor)
         elif pb_instance is not None:
             verb_trees = self.get_semtrees_from_pb_instance(tree_name, anchor, pb_instance)
@@ -43,7 +46,8 @@ class SemTreeGrammar(object):
             verb_trees = self.get_semtrees_from_lemma(tree_name, anchor, lemma)
             sem_tree = verb_trees[0] # Don't have any better way to choose at this point 
         else:
-            assert False
+            #print("NotImplementedError", tree.tree_family)#, tree_name, anchor, lemma, pb_instance)
+            raise NotImplementedError
 
         self.sem_trees[(tree_name, anchor)] = sem_tree
         return sem_tree.copy()
@@ -72,10 +76,11 @@ class SemTreeGrammar(object):
         that can be applied successively.
         """
 
+        print(frame.np_var_order, frame.sem_dict)
+
         tree = self.grammar.get(tree_name)
         declarative_tree = self.grammar.get_declarative_tree(tree.tree_family)
-        assert declarative_tree is not None
-        sub_nouns = [n for n in declarative_tree.subst_nodes() if n.prefix() == "NP"]
+        sub_nouns = [n for n in declarative_tree.subst_nodes() if n.prefix() in ["NP", "S"]]
 
         # Going to lexicalize for each frame
         tree = tree.copy()
@@ -89,6 +94,11 @@ class SemTreeGrammar(object):
             return None
 
         # Can't align semantics if wrong number of nouns/subnodes
+        # Try using actual tree's subnodes (for when declarative tree is beta)
+        if len(frame.np_var_order) != len(sub_nouns):
+            sub_nouns = [n for n in tree.subst_nodes() if n.prefix() in ["NP", "S"]]
+
+        # Still can't align semantics
         if len(frame.np_var_order) != len(sub_nouns):
             return None
 
@@ -267,7 +277,7 @@ class SemTreeGrammar(object):
         elif tree_name in sem_map:
             key = tree_name
         else:
-            print(tree_name, anchor)
+            #print(tree_name, anchor)
             raise NotImplementedError
 
         node_dict = sem_map[key]
@@ -336,11 +346,25 @@ if __name__ == '__main__':
         "betaCONJs", # 1966 
     ])
 
-    count = 0
+    success, missing, index, key = 0, 0, 0, 0
     deriv_trees = DerivationTree.load_all(treedir=DATA_DIR + 'revised_parse_trees')
     for deriv in deriv_trees:
-        if deriv.have_semantics(g, tree_families, trees):
-            count += 1
-    print("have semantics for %d of %d" % (count, len(deriv_trees)))
+        try:
+            parse = deriv.get_parse_tree(s)
+            success += 1
+        except NotImplementedError:
+            missing += 1
+            continue
+        except IndexError:
+            index += 1
+            continue
+        except KeyError:
+            key += 1
+            continue
 
-            
+        sem = parse.full_semantics()
+        #print(parse.leaves())
+        #print(sem)
+        #print()
+
+    print("success %d, missing %d, index %d, key %d, total %d" % (success, missing, index, key, len(deriv_trees)))

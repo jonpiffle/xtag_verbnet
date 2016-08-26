@@ -101,7 +101,7 @@ class VariableParser(object):
                 rest = rest[1:] # remove closing paren
             else:
                 arg = Variable(arg, arg_type="Event", event_type=text)
-        elif arg_str.isupper():
+        elif arg_str.isupper() or all(not c.isalpha() for c in arg_str): #arg_str.isdigit():
             arg = Constant(arg_str)
         else:
             arg = Variable(arg_str)

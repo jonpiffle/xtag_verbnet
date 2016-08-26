@@ -1,6 +1,6 @@
 import nltk, re, itertools, copy
 
-from collections import defaultdict
+from collections import defaultdict, deque
 
 class VariableBinding(object):
     def __init__(self, binding=None):
@@ -15,13 +15,20 @@ class VariableBinding(object):
         return self.binding.items()
 
     def __setitem__(self, key, value):
-        self.binding[key.copy()] = value.copy()
+        if key is not None:
+            key = key.copy()
+        if value is not None:
+            value = value.copy()
+        self.binding[key] = value
 
     def __contains__(self, key):
         return key in self.binding
 
     def __getitem__(self, key):
-        return self.binding[key].copy()
+        value = self.binding[key]
+        if value is not None:
+            value = value.copy()
+        return value
 
     def __str__(self):
         return str(self.binding)
@@ -35,7 +42,7 @@ class VariableFactory(object):
     @classmethod
     def get_var(cls, pre=None):
         """Returns next available variable name given a prefix (or default, z)"""
-        if pre is None:
+        if pre is None or not pre.isalpha():
             pre = 'z' 
         pre = pre.lower()
         cls.count_dict[pre] += 1
@@ -124,8 +131,8 @@ class Semantics(object):
         rename_dict = VariableBinding()
         variables = self.variables()
         if sem_var is not None and isinstance(sem_var, CompoundVariable):
-            variables.add(sem_var.first)
-            variables.add(sem_var.second)
+            for v in sem_var.flattened_variable_list():
+                variables.add(v)
         elif sem_var is not None:
             variables.add(sem_var)
 
@@ -175,7 +182,7 @@ class Semantics(object):
             args = []
             for arg_xml in rel_xml.find("ARGS").findall("ARG"):
                 arg_type = arg_xml.attrib["type"]
-                arg_str = arg_xml.attrib["value"]
+                arg_str = arg_xml.attrib["value"].split("_")[0]
 
                 # This happens in the case of event type modifiers
                 # ie "during(E)", "start(E)", etc.
@@ -238,7 +245,10 @@ class Semantics(object):
 
         # Convert every list of relations to a Semantics object and apply the necessary renames 
         sem_dict = {e: Semantics(r).apply_binding(rename_dict) for e,r in sem_dict.items()}
-        return sem_dict
+
+        # Need in the np_mapping step
+        reverse_lookup = {v: k for k,v in rename_dict.items()}
+        return sem_dict, reverse_lookup
 
 class Constant(object):
     """Class representing an FOL symbol/constant"""
@@ -288,7 +298,12 @@ class Variable(object):
         """Returns self after renaming, if necessary"""
         assert isinstance(rename_dict, VariableBinding)
         if self in rename_dict:
-            return rename_dict[self]
+            new_var = rename_dict[self]
+            new_var.orig_name = self.name
+            new_var.arg_type = self.arg_type 
+            new_var.event_type = self.event_type 
+            new_var.missing = self.missing
+            return new_var
         return self
 
     def prefix(self):
@@ -321,7 +336,7 @@ class Variable(object):
         return isinstance(o, Variable) and o.name == self.name
 
     def __hash__(self):
-        return hash(self.name)
+        return hash(str(self))
 
 class CompoundVariable(Variable):
     def __init__(self, first, second):
@@ -332,6 +347,22 @@ class CompoundVariable(Variable):
         self.first = self.first.apply_binding(rename_dict)
         self.second = self.second.apply_binding(rename_dict)
         return self
+
+    def flattened_variable_list(self):
+        """Returns a list of simple variables contained in the CompoundVariable"""
+        variable_list = []
+
+        queue = deque([self.first, self.second])
+        while len(queue) > 0:
+            v = queue.popleft()
+
+            if isinstance(v, CompoundVariable):
+                queue += [v.first, v.second]
+            else:
+                variable_list.append(v)
+
+        return variable_list
+
 
 class AndVariable(CompoundVariable):
     def copy(self):

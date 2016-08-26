@@ -20,6 +20,11 @@ class Grammar(object):
             self.anchor_pos_dict[tuple([a.prefix() for a in t.anchor_positions()])].append(t)
             self.tree_family_dict[t.tree_family].append(t)
 
+    def get_tree_family(self, tree_name):
+        """Returns the tree's family, given the tree name"""
+        tree = self.get(tree_name)
+        return tree.tree_family
+
     def get(self, tree_name, copy=True):
         """Returns the TAGTree given by tree_name"""
         tree = self.tree_dict.get(tree_name)

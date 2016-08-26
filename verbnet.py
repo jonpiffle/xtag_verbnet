@@ -117,15 +117,17 @@ class Frame(object):
         """Returns a Frame object from the VerbNet XML representation"""
         primary = xml.find("DESCRIPTION").attrib.get("primary", "")
         secondary = xml.find("DESCRIPTION").attrib.get("secondary", "")
-        sem_dict = Semantics.semdict_fromxml(xml.find("SEMANTICS"))
+        sem_dict, reverse_lookup = Semantics.semdict_fromxml(xml.find("SEMANTICS"))
+
 
         # Need the order of np vars given in syntax for mapping to subst nodes
         nps = xml.find("SYNTAX").findall("NP")
         np_order = [np.attrib["value"] for np in nps]
         sem_vars = [v for s in sem_dict.values() for v in s.variables()]
         np_var_order = []
+
         for np in np_order:
-            match = [v for v in sem_vars if v.orig_name == np]
+            match = [v for v in sem_vars if reverse_lookup[v].name == np]
             if len(match) > 0 and not match[0].missing: # Ignore "?" variables
                 np_var_order.append(match[0])
 

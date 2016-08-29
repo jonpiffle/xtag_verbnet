@@ -3,7 +3,7 @@ import nltk, copy
 from collections import defaultdict
 from nltk.featstruct import FeatStruct
 
-from semantics import Semantics, Variable, VariableBinding, CompoundVariable
+from semantics import Semantics, Variable, VariableBinding, CompoundVariable, Constant
 
 class TAGTree(nltk.ParentedTree):
     """

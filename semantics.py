@@ -273,7 +273,7 @@ class Constant(object):
         return Constant(self.name)
 
     def __eq__(self, o):
-        return isinstance(o, Variable) and o.name == self.name
+        return isinstance(o, Constant) and o.name == self.name
 
     def __hash__(self):
         return hash(str(self))

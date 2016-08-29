@@ -1,4 +1,4 @@
-import inflection
+import inflection, traceback
 
 from collections import defaultdict
 
@@ -6,7 +6,7 @@ from grammar import Grammar
 from verbnet import VerbNet, XTAGMapper
 from propbank import Propbank
 from derivation import DerivationTree
-from semantics import Semantics, VariableFactory, Constant, Relation, Token, Variable
+from semantics import Semantics, VariableFactory, Constant, Relation, Token, Variable, VariableBinding
 from tagtree import SemTree
 from semparser import SemanticParser, VariableParser
 from vnet_constants import DATA_DIR
@@ -39,6 +39,9 @@ class SemTreeGrammar(object):
             raise NotImplementedError
         elif not tree.belongs_to_verb_family():
             sem_tree = self.get_nonverb_semtree(tree_name, anchor)
+        elif tree.tree_family in ['Ts0N1', 'Tnx0Pnx1', 'Tnx0N1', 'Tnx0BEnx1', 'Tnx0Ax1', 'Ts0Ax1', 'Ts0Pnx1']:
+            verb_trees = self.get_nonverb_tree_family(tree_name, anchor)
+            sem_tree = verb_trees[0]
         elif pb_instance is not None:
             verb_trees = self.get_semtrees_from_pb_instance(tree_name, anchor, pb_instance)
             sem_tree = verb_trees[0] # Don't have any better way to choose at this point 
@@ -58,16 +61,89 @@ class SemTreeGrammar(object):
         semtrees = [s for s in semtrees if s is not None]
         return semtrees
 
+    def get_nonverb_tree_family(self, tree_name, anchor):
+        annotations = {
+            'Ts0N1': {
+                'np_var_order': ['e1'],
+                'sem_dict': {'Event': 'ISA(e1, %s)' % anchor.upper()},
+                'event': 'e1',
+            },
+            'Tnx0Pnx1': {
+                'np_var_order': ['a1', 'l1'],
+                'sem_dict': {'Event': '%s(e1, a1, l1)' % anchor, 'a1': 'Agent(e1,a1)', 'l1': 'Location(e1, l1)'},
+                'event': 'e1',
+            },
+            'Tnx0N1': {
+                'np_var_order': ['a1'],
+                'sem_dict': {'Event': 'Agent(e1,a1)', 'a1': 'ISA(a1, %s)' % anchor.upper()},
+                'event': 'e1',
+            },
+            'Tnx0BEnx1': {
+                'np_var_order': ['a1', 'l1'],
+                'sem_dict': {'Event': 'Agent(e1,a1)', 'l1': '', 'a1': ''},
+                'event': 'e1',
+            },
+            'Tnx0Ax1': {
+                'np_var_order': ['a1',],
+                'sem_dict': {'Event': 'Agent(e1,a1)', 'a1': 'ISA(a1, %s)' % anchor.upper()},
+                'event': 'e1',
+            },
+            'Ts0Ax1': {
+                'np_var_order': ['e1',],
+                'sem_dict': {'Event': 'ISA(e1, %s)' % anchor.upper()},
+                'event': 'e1',
+            },
+            'Ts0Pnx1': {
+                'np_var_order': ['e1', 'l1'],
+                'sem_dict': {'Event': '%s(e1, l1)' % anchor, 'l1': 'Theme(e1, l1)'},
+                'event': 'e1',  
+            },
+
+        }
+
+        tree = self.grammar.get(tree_name, copy=True)
+
+        np_var_order = annotations[tree.tree_family]['np_var_order']
+        sem_dict = annotations[tree.tree_family]['sem_dict']
+
+        np_var_order = [VariableParser.parse(v)[0] for v in np_var_order]
+        for v in np_var_order:
+            if v.name == annotations[tree.tree_family]['event']:
+                v.arg_type = 'Event'
+
+        for var_name, sem_str in sem_dict.items():
+            sem_dict[var_name] = SemanticParser.parse(sem_str)
+
+        for v in sem_dict['Event'].variables():
+            if v.name == annotations[tree.tree_family]['event']:
+                v.arg_type = 'Event'
+
+        return [self.add_semantics(tree, anchor, np_var_order, sem_dict)]
+
     def get_semtrees_from_pb_instance(self, tree_name, anchor, pb_instance):
         vn_classes = self.propbank.get_vn_classes(pb_instance.filenum, pb_instance.sentnum, pb_instance.word)
         frames = []
         for vn_class in vn_classes:
             frames += self.verbnet.get_frames_from_class(vn_class)
-        semtrees = [self.add_semantics(f, tree_name, anchor) for f in frames]
+
+        semtrees = []
+        for frame in frames:
+            # Requires a new copy every time
+            tree = self.grammar.get(tree_name, copy=True)
+
+            # Skip frames from different family
+            xtag_family = self.xtag_mapper.get_xtag_family(frame.primary, frame.secondary) 
+            if xtag_family is None or xtag_family != tree.tree_family:
+                continue
+
+            # Return tree with semantics
+            semtree = self.add_semantics(tree, anchor, frame.np_var_order, frame.sem_dict)
+            semtrees.append(semtree)
+
         semtrees = [s for s in semtrees if s is not None]
         return semtrees
 
-    def add_semantics(self, frame, tree_name, anchor):
+    def add_semantics(self, tree, anchor, np_var_order, sem_dict):
         """
         Given a lemma and tree names, returns sem trees given by all matching
         verb classes and their frames. This is where all of the transformation
@@ -76,53 +152,53 @@ class SemTreeGrammar(object):
         that can be applied successively.
         """
 
-        print(frame.np_var_order, frame.sem_dict)
-
-        tree = self.grammar.get(tree_name)
-        declarative_tree = self.grammar.get_declarative_tree(tree.tree_family)
-        sub_nouns = [n for n in declarative_tree.subst_nodes() if n.prefix() in ["NP", "S"]]
-
-        # Going to lexicalize for each frame
-        tree = tree.copy()
-
-        xtag_family = self.xtag_mapper.get_xtag_family(frame.primary, frame.secondary) 
-        if xtag_family is None or xtag_family != tree.tree_family:
-            return None
-
         # Currently ignore trees with more than one anchor (like Tnx0VPnx1)
         if len(tree.anchor_positions()) > 1:
             return None
 
+        declarative_tree = self.grammar.get_declarative_tree(tree.tree_family)
+        sub_nouns = [n for n in declarative_tree.subst_nodes() if n.prefix() in ["NP", "S"]]
+
         # Can't align semantics if wrong number of nouns/subnodes
         # Try using actual tree's subnodes (for when declarative tree is beta)
-        if len(frame.np_var_order) != len(sub_nouns):
+        if len(np_var_order) != len(sub_nouns):
             sub_nouns = [n for n in tree.subst_nodes() if n.prefix() in ["NP", "S"]]
 
         # Still can't align semantics
-        if len(frame.np_var_order) != len(sub_nouns):
+        if len(np_var_order) != len(sub_nouns):
             return None
+
 
         # Lexicalize tree
         tree.lexicalize(anchor)
 
         # Align np vars and substitution nodes
         node_entity_dict = {}
-        for np_var, subst_node in zip(frame.np_var_order, sub_nouns):
+        for np_var, subst_node in zip(np_var_order, sub_nouns):
             node_entity_dict[subst_node.label()] = np_var
 
         tree = SemTree.convert(tree)
 
         # Map event semantics to root
-        sem_dict = frame.sem_dict
         tree.semantics = sem_dict["Event"]
+
+        # Replace anchor specific constants
+        anchor_rename = VariableBinding({Constant("__ANCHOR__"): Constant(anchor.upper())})
+        tree.semantics.apply_binding(anchor_rename)
+
+        events = [v for v in tree.semantics.variables() if v.arg_type == "Event"]
+        if len(events) == 0:
+            import code; code.interact(local=locals())
+
         tree.sem_var = tree.semantics.event()
         # Map argument semantics to subst nodes
         for node_label, np_var in node_entity_dict.items():
             subst_node = tree.find(node_label)
-            if subst_node is not None:
+            if subst_node is not None and tree.sem_var.name != np_var.name:
                 #subst_node.semantics = sem_dict[np_var.name]
                 tree.semantics = tree.semantics.concat(sem_dict[np_var.name])
                 subst_node.sem_var = np_var
+                tree.semantics.apply_binding(anchor_rename) # replace anchor specific constants
 
         # Check for PRO trees
         # Unclear to me how to handle the semantics here
@@ -138,12 +214,13 @@ class SemTreeGrammar(object):
         # variable that was extracted e.g. in "cat -> cat that chased the dog"
         # both "cat" and "cat that chased the dog" refer to the cat entity
         if tree.tree_name.startswith("betaN"):
-            nps = [n for n in tree.subtrees() if n.prefix() == "NP" and n.label() not in ["NP_r", "NP_f", "NP_w"]]
+            nps = [n for n in tree.subtrees() if n.prefix() in ["NP", "S"] and n.label() not in ["NP_r", "NP_f", "NP_w", "S_r", "S_f", "S_w"]]
             extracted = [n for n in nps if n.has_trace()][0] 
             tree.find("NP_r").sem_var = node_entity_dict[extracted.label()]
             tree.find("NP_f").sem_var = node_entity_dict[extracted.label()]
             wh_var = VariableFactory.get_var()
             tree.find("NP_w").sem_var = wh_var
+
 
         return tree
 
@@ -363,8 +440,8 @@ if __name__ == '__main__':
             continue
 
         sem = parse.full_semantics()
-        #print(parse.leaves())
-        #print(sem)
-        #print()
+        print(parse.leaves())
+        print(sem)
+        print()
 
     print("success %d, missing %d, index %d, key %d, total %d" % (success, missing, index, key, len(deriv_trees)))

@@ -1,4 +1,4 @@
-import inflection, traceback
+import inflection, traceback, json
 
 from collections import defaultdict
 
@@ -400,29 +400,7 @@ if __name__ == '__main__':
     chase_ps.draw()
     '''
 
-    tree_families = set(mapper.xtag_mapping.values())
-    trees = set([
-        "alphaNXN",
-        "betaAn",
-        "betaNn",
-        "betaDnx",
-        "betaVvx",
-        "betanxPnx",
-        "betavxPnx",
-        "betasPUs",
-        "betaARBvx",
-        "betanxPUnx",
-        "betaPUs",
-        "betaVs",
-        "betaPUs", # 2628 
-        "betanx1CONJnx2", # 2568 
-        "betanxGnx", # 2489 
-        "betavxPs", # 2299 
-        "betas1CONJs2", # 2169 
-        "betaARBs", # 2015 
-        "betaCONJs", # 1966 
-    ])
-
+    results = []
     success, missing, index, key = 0, 0, 0, 0
     deriv_trees = DerivationTree.load_all(treedir=DATA_DIR + 'revised_parse_trees')
     for deriv in deriv_trees:
@@ -440,8 +418,10 @@ if __name__ == '__main__':
             continue
 
         sem = parse.full_semantics()
-        print(parse.leaves())
-        print(sem)
-        print()
+        result = {"sentence": "%s_%s.parse" % (deriv.file_num, deriv.sentence_num), "semantics": str(sem)}
+        results.append(result)
+        print(result)
 
     print("success %d, missing %d, index %d, key %d, total %d" % (success, missing, index, key, len(deriv_trees)))
+    with open("data/semantics.json", "w") as f:
+        json.dump(results, f, indent=1)

@@ -13,6 +13,7 @@ class DerivationTree(nltk.Tree):
         self._label = label
         self.tree_name, self.anchor, self.location = DerivationTree.label_to_tree_word_loc(label)
         self.file_num, self.sentence_num = DerivationTree.filename_to_file_sent_num(filename)
+        self.filename = filename
         nltk.Tree.__init__(self, self._label, children)
 
     def have_semantics(self, grammar, tree_families, tree_set):

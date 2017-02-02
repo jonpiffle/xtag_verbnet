@@ -57,7 +57,11 @@ class SemTreeGrammar(object):
 
     def get_semtrees_from_lemma(self, tree_name, anchor, lemma):
         frames = self.verbnet.get_frames(lemma)
-        semtrees = [self.add_semantics(f, tree_name, lemma) for f in frames]
+        semtrees = []
+        for f in frames:
+            tree = self.grammar.get(tree_name, copy=True)
+            semtrees.append(self.add_semantics(tree, anchor, f.np_var_order, f.sem_dict))
+        #semtrees = [self.add_semantics(tree_name, lemma, f.sem_dict) for f in frames]
         semtrees = [s for s in semtrees if s is not None]
         return semtrees
 
@@ -374,7 +378,6 @@ if __name__ == '__main__':
     propbank = Propbank.load()
     s = SemTreeGrammar(g, vnet, mapper, propbank)
 
-    '''
     jump = s.get_semtree('alphanx0Vnx1', 'jumped', lemma='run')
     tree_families = set(mapper.xtag_mapping.values())
     all_trees = set()
@@ -386,7 +389,7 @@ if __name__ == '__main__':
     '''
 
     '''
-    chase_ps = s.get_semtree('alphanx0Vnx1', 'jump', lemma='run')
+    chase_ps = s.get_semtree('alphanx0Vnx1', 'chase', lemma='run')
     cat_ps = s.get_semtree('alphaNXN', 'cat')
     dog_ps = s.get_semtree('alphaNXN', 'dog')
     red_ps = s.get_semtree('betaAn', 'red')
@@ -395,11 +398,11 @@ if __name__ == '__main__':
     chase_ps = chase_ps.substitute(dog_ps, 'NP_1')
     chase_ps = chase_ps.adjoin(red_ps, "N")
     chase_ps = chase_ps.adjoin(the_ps, 'NP_0')
-    for sub in chase_ps.subtrees():
-        print(sub.label(), sub.semantics)
+    #for sub in chase_ps.subtrees():
+    #    print(sub.label(), sub.semantics)
     chase_ps.draw()
-    '''
 
+    '''
     results = []
     success, missing, index, key = 0, 0, 0, 0
     deriv_trees = DerivationTree.load_all(treedir=DATA_DIR + 'revised_parse_trees')
@@ -425,3 +428,4 @@ if __name__ == '__main__':
     print("success %d, missing %d, index %d, key %d, total %d" % (success, missing, index, key, len(deriv_trees)))
     with open("data/semantics.json", "w") as f:
         json.dump(results, f, indent=1)
+    '''

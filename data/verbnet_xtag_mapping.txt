@@ -1,0 +1,1107 @@
+<primary="Apart Reciprocal Alternation Intransitive" secondary="" xtag="TREnx1VA2" name="Resultatives w/ V(ergative)">
+<note>
+Note that this appears to be the most appropriate class. However, a number of
+the verbs in the VN class split-23.3 are not ergative and, so, are not listed
+in the XTAG grammar as members of this tree family. Examples of such verbs
+include 'blow,' 'cut,' 'draw,' 'hack,' 'hew,' and 'hack.' (this list is not exhaustive)
+</note>
+
+
+<primary="Apart Reciprocal Alternation Transitive" secondary="" xtag="TRnx0Vnx1A2" name="TRnx0Vnx1A2">
+<note>
+</note>
+
+
+<primary="As Alternation" secondary="+ Predicative" xtag="Tnx0Vs1" name="Sentential Complement">
+<note>
+Note that XTAG considers the string 'him a man' in the utterance "We
+considered him a man" to be sentential complement consisting of a Small
+Clause. In VerbNet the Small Clause sentential complement is decomposed into
+the small clause's two constituents.
+</note>
+
+
+<primary="Attribute Object Possessor-Attribute Factoring Alternation" secondary="" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Basic Intransitive" secondary="" xtag="Tnx0V" name="Intransitive">                         
+<note>
+</note>
+
+<primary="Basic Intransitive" secondary="inchoative" xtag="Tnx0V" name="Intransitive">                         
+<note>
+</note>
+
+
+<primary="Basic Transitive" secondary="" xtag="Transitive" name="Tnx0Vnx1">                         
+<note>
+</note>
+
+
+<primary="Benefactive Alternation" secondary="double object" xtag="Tnx0Vnx2nx1" name="Ditransitive">
+<note>
+</note>
+
+
+<primary="Benefactive Alternation" secondary="for variant" xtag="Tnx0Vnx1pnx2" name="Ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Benefactive Alternation" secondary="non-alternating for-only variant" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Benefactive Alternation" secondary="for variant + Source PP "xtag="Tnx0Vnx1pnx2" name="Ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Body-Part Possessor Ascension Alternation" secondary="" xtag="Tnx0Vnx1pnx2" name="Ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Causative" secondary="" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Causative/Inchoative Alternation" secondary="causative" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Causative/Inchoative Alternation" secondary="inchoative" xtag="TEnx1V" name="Ergative">
+<note>
+</note>
+
+
+<primary="Causative/Inchoative Alternation" secondary="causative, Material Object" xtag="Tnx0Vnx1Pnx2" name="Multiple anchor ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Causative/Inchoative Alternation" secondary="causative, Product Object" xtag="Tnx0Vnx1Pnx2" name="Multiple anchor ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Causative/Inchoative Alternation"  secondary="inchoative, Material subject" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+</note>
+
+
+<primary="Causative/Inchoative Alternation"  secondary="causative, + Material + Product" xtag="Tnx0Vnx1Pnx2" name="Multiple anchor ditransitive with PP">
+<note>
+In VerbNet this frame appears only in the turn-26.6 class. Therefore, seven
+verbs ('alter,' 'change,' 'convert,' 'metamorphose,' 'transform,' 'transmute,'
+and 'turn') take this frame in VerbNet. Six of these verbs can appear in Basic
+Intransitive and Basic Transitive frames, and, so, in XTAG for these verbs this
+construction would be classified as a transitive sentence with prepositional
+adjuncts. However, the verb 'turn,' is
+considered by XTAG as belonging to
+tree family TRnx0Vnx1Pnx2 (resultatives with a PP anchor), in this instance as
+one cannot say "The witch turned
+the frog" with the interpretation that the frog transformed.
+</note>
+
+
+<primary="Causative/Inchoative Alternation"  secondary="inchoative, + Material + Product" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+In VerbNet this frame appears only in the turn-26.6 class. Therefore, seven
+verbs ('alter,' 'change,' 'convert,' 'metamorphose,' 'transform,' 'transmute,'
+and 'turn') take this frame in VerbNet. Six of these verbs can appear in Basic
+Intransitive and Basic Transitive frames, and, so, in XTAG for these verbs this
+construction would be classified as an intransitive sentence with prepositional
+adjuncts. However, the verb 'turn,' is considered by XTAG as belonging to tree
+family TREnx1VPnx2 (resultatives with
+an ergative verb and PP anchor), in this instance as one cannot say "The witch
+turned
+the frog" with the interpretation that the frog transformed.
+</note>
+
+
+<primary="Characteristic Property of Instrument"  secondary="" xtag="Tnx0V" name="Intransitive">
+<note>
+</note>
+
+
+<primary="Conative"  secondary="" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+Note: XTAG specifies that no verb should appear both in 6.1 and 6.11. Whereas
+Prep following the verb are optional in 6.1, in 6.11 the verbs require a Prep
+to be grammatical. This was a difficult choice as the 6.11 tree family does not
+require a specific preposition to serve as the anchor of the PP. However, among
+the verbs participating in the Conative Alternation, many, if not most, appear
+to also participate in alternations with other preps. For instance, "Mary cut
+the bread" could alternate with "Mary cut at the bread" or "Mary cut into the
+bread."
+</note>
+
+
+<primary="Dative"  secondary="" xtag="Tnx0Vnx2nx1" name="Ditransitive">
+<note>
+</note>
+
+
+<primary="Dative"  secondary="Ditransitive variant" xtag="Tnx0Vnx2nx1" name="Ditransitive">
+<note>
+</note>
+
+
+<primary="Dative"  secondary="to-PP variant" xtag="Tnx0Vnx1pnx2" name="Ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Direct Speech"  secondary="+ Recipient Object" xtag="Tnx0Vnx1s2" name="Sentential Complement with NP">
+<note>
+</note>
+
+
+<primary="Direct Speech"  secondary="" xtag="Tnx0Vs1" name="Sentential Complement">
+<note>
+</note>
+
+
+<primary="Direct Speech"  secondary="+ Recipient PP" xtag="Tnx0Vs1" name="Sentential Complement">
+<note>
+</note>
+
+
+<primary="Expletive Construction"  secondary="" xtag="Tnx0V" name="Intransitive">
+<note>
+</note>
+
+
+<primary="Expletive Construction"  secondary="+Theme Object" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Expletive Construction"  secondary="+with-Theme" xtag="Tnx0V" name="Intransitive">
+<note>
+Note that of the weather verbs that appear in the the XTAG syntactic lexicon
+(many do not appear), many belong to either Tnx0V or Tnx0Vnx1, but not both.
+</note>
+
+
+<primary="Fulfilling Alternation"  secondary="" xtag="Tnx0Vnx1Pnx2" name="Multiple anchor ditransitive with PP">
+<note>
+I wonder about this assignment. In truth this is not an obvious assignment as
+the Tnx0Vnx1Pnx2 tree family is meant to be restricted to verbs which are
+obligatorily ditransitive. While some of the VerbNet verbs that take the
+Fulfilling Alternation have this property, others do not. For instance, the
+verb 'equip' may occur in Transitive situations. It is perfectly allowable to
+say "I equipped the entire expedition" without specifying the materials given
+to the recipients. However, the same cannot be said for 'entrust,' which
+obligatorily requires a PP introduced by 'with' to follow the Direct Object. I
+chose this tree family on the basis of the underlying interpretation of the
+Fulfilling Alternation and the observation that in most cases, purely
+transitive sentences such as those exhibited by 'equip' are not grammatical
+under the relevant interpretation (although 'equip,' 'arm,' and 'reward'
+nonwithstanding).
+</note>
+
+
+<primary="Image Impression Alternation"  secondary="locative variant" xtag="Tnx0Vnx1pnx2" name="Ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Image Impression Alternation"  secondary="with variant" xtag="Tnx0Vnx1Pnx2" name="Multiple anchor ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Induced Action"  secondary="with accompanied motion and path PP" xtag="Tnx0Vnx1Pnx2" name="Multiple anchor ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Induced Action"  secondary="without accompanied motion, with path PP" xtag="Tnx0Vnx1Pnx2" name="Multiple anchor ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Induced Action"  secondary="with accompanied motion, no path PP" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Induced Action"  secondary="without accompanied motion, no path PP" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Instrument Subject Alternation"  secondary="" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Intransitive"  secondary="+ against/about-PP" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+</note>
+
+
+<primary="Intransitive"  secondary="+ Cause PP" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+</note>
+
+
+<primary="Intransitive"  secondary="+ Recipient PP" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+</note>
+
+
+<primary="Intransitive"  secondary="+ PP Experiencer" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+</note>
+
+
+<primary="Intransitive"  secondary="+ Location PP" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+Although in mappping the actual members from VerbNet to XTAG one will
+encounter the fact that XTAG disntinguished a number of them as being ergative
+verbs. 'Break,' for example, is listed as an ergative verb in the XTAG
+syntactic lexicon.
+</note>
+
+
+<primary="Intransitive"  secondary="+ locative PP" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+</note>
+
+
+<primary="Intransitive"  secondary="inchoative" xtag="TEnx1V" name="Ergative">
+<note>
+</note>
+
+
+<primary="Intransitive"  secondary="+ Oblique PP" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+</note>
+
+
+<primary="Intransitive"  secondary="+ with-PP" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+This instance was very difficult at first because of the example (which I am
+going to change.) The example sentence given is "The bag is bulging with
+groceries," which made me want to treat this as a Small Clause. However,
+sentences such as "The bag bulges with grocercies" or "His bag bulged with
+groceries" clarify this distinction.
+</note>
+
+
+<primary="Intransitive"  secondary="+ against-NP" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+</note>
+
+
+<primary="Intransitive"  secondary="+ for-PP" xtag="Tnx0VPnx1" name="Multiple anchor PP complement">
+<note>
+</note>
+
+
+<primary="Intransitive"  secondary="+ after-PP" xtag="Tnx0VPnx1" name="Multiple anchor PP complement">
+<note>
+</note>
+
+
+<primary="Intransitive"  secondary="+ with-PP + Topic PP" xtag="Tnx0VPnx1" name="Multiple anchor PP complement">
+<note>
+</note>
+
+
+<primary="Intransitive"  secondary="+ with-PP" xtag="Tnx0VPnx1" name="Multiple anchor PP complement">
+<note>
+</note>
+
+
+<primary="Intransitive"  secondary="" xtag="Tnx0V" name="Intransitive">
+<note>
+</note>
+
+
+<primary="Intransitive"  secondary="+ Source PP" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+</note>
+
+
+<primary="Intransitive"  secondary="+ with/to-PP" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+</note>
+
+
+<primary="Intransitive"  secondary="+ path PP" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+</note>
+
+
+<primary="Intransitive"  secondary="+ Recipient PP" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+</note>
+
+
+<primary="Intransitive"  secondary="+ possessive Theme PP" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Intransitive"  secondary="+ from/with-PP" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+Am tempted to mark this as belonging to tree family 6.11 but if the syntactic
+subject is plural, then a purely intransitive usage is allowable.
+</note>
+
+
+<primary="Intransitive"  secondary="+ Patient PP" xtag="Tnx0VPnx1" name="Multiple anchor PP complement">
+<note>
+</note>
+
+
+<primary="Intransitive"  secondary="+ Location + Theme PP" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+Clearly. XTAG would treat the Location and Theme PP as adjuncts. All the
+35.1-hunt verbs are members of the 6.1 tree family in the XTAG grammar.
+</note>
+
+
+<primary="Intransitive"  secondary="+ Theme + Location PP" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+see Intransitive (+ Location PP + Theme PP)
+</note>
+
+
+<primary="Intransitive"  secondary="dropped Topic + Source PP" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+</note>
+
+
+<primary="Intransitive"  secondary="+ over-PP" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+the over-PP mereley is an adjunct expressing the reason for the action.
+</note>
+
+
+<primary="Intransitive"  secondary="Plural subject" xtag="Tnx0V" name="Intransitive">
+<note>
+</note>
+
+
+<primary="Intransitive"  secondary="+ as Predicate" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+To my ear, these verbs usually sound stitlted when occuring alone. However,
+they are perfectly natural given the correct context (usually as answers to
+questions about what one was doing). In the XTAG the verbs taking this frame
+(in the mnasquerade-29.6 class) all are listed as being members of the Tnx0V
+tree family with the exception of 'camouflage.' Personally, I doubt whether
+'camouflage' is an appropriate member of this class, though.
+</note>
+
+
+<primary="Intransitive"  secondary="inchoative + PP" xtag="Tnx0Vpnx1" name="Intransitive">
+<note>
+</note>
+
+
+<primary="Intransitive"  secondary="+ Destination PP" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+With the exception of 'suspend,' all the verbs taking this frame in
+put_spatial-9.2-1 are listed as members of the Tnx0V tree family.
+</note>
+
+
+<primary="Intransitive"  secondary="+ here/there" xtag="Tnx0V" name="Intransitive">
+<note>
+See Intransitive (+ Destination PP)
+</note>
+
+
+<primary="Intransitive"  secondary="+ of-PP" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+</note>
+
+
+<primary="Intransitive"  secondary="+ Adjective" xtag="Tnx0Vax1" name="Intransitive with Adjective">
+<note>
+</note>
+
+
+<primary="Intransitive"  secondary="+ Experiencer PP" xtag="Tnx0Vax1" name="Intransitive with Adjective">
+<note>
+</note>
+
+
+<primary="Intransitive"  secondary="+ to-PP + Topic PP" xtag="Tnx0V" name="Intransitive">
+<note>
+</note>
+
+
+<primary="Intransitive"  secondary="+ to-PP" xtag="Tnx0V" name="Intransitive">
+<note>
+</note>
+
+
+<primary="Intransitive"  secondary="+ with-PP + Topic PP" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+</note>
+
+
+<primary="Intransitive"  secondary="+ Topic PP + Recipient PP" xtag="Tnx0V" name="Intransitive">
+<note>
+</note>
+
+
+<primary="Intransitive"  secondary="+ Topic PP" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+</note>
+
+
+<primary="Intransitive"  secondary="+ Theme PP" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+</note>
+
+
+<primary="Location Subject Alternation"  secondary="" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Locative Alternation"  secondary="" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+</note>
+
+
+<primary="Locative Alternation"  secondary="of variant" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+</note>
+
+
+<primary="Locative Alternation"  secondary="with variant" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+</note>
+
+
+<primary="Locative Inversion"  secondary="" xtag="Tnx0V" name="Intransitive">            
+<note>
+</note>
+
+
+<primary="Locative Preposition Drop"  secondary="" xtag="Tnx0Vnx1" name="Transitive">            
+<note>
+</note>
+
+
+<primary="Locatum Subject Alternation"  secondary="" xtag="Tnx0Vnx1" name="Transitive">            
+<note>
+</note>
+
+
+<primary="Materal/Product Alternation Intransitive"  secondary="Material Subject" xtag="Tnx0V" name="Intransitive">            
+<note>
+</note>
+
+
+<primary="Materal/Product Alternation Intransitive"  secondary="Product Subject" xtag="Tnx0V" name="Intransitive">            
+<note>
+</note>
+
+
+<primary="Material/Product Alternation Transitive"  secondary="Material Object" xtag="Tnx0Vnx1" name="Transitive">            
+<note>
+</note>
+
+
+<primary="Material/Product Alternation Transitive"  secondary="Product Object" xtag="Tnx0Vnx1" name="Transitive">            
+<note>
+</note>
+
+
+<primary="Middle Construction"  secondary="" xtag="Tnx0V" name="Intransitive">            
+<note>
+</note>
+
+
+<primary="PRO-Arb Object Alternation"  secondary="" xtag="Tnx0Vnx1" name="Transitive">            
+<note>
+</note>
+
+
+<primary="Passive"  secondary="Participle form" xtag="Tnx0Vnx1" name="Transitive">            
+<note>
+</note>
+
+
+<primary="Passive"  secondary="" xtag="Tnx0Vnx1" name="Transitive">            
+<note>
+This is a problematic case. The frame occurs in two VN classes:
+being_dressed-41.3.3 and marvel-31.3. In the case of the being_dressed-41.3.3
+verbs, the frame is a passivized version of a ditransitive verb with a PP,
+which corresponds to XTAG: 6.5 Ditransitive with PP( Tnx0Vnx1pnx2). In the
+case of the marvel-31.3 verbs, the frame is a passivized version of the
+following XTAG family: 6.12 Multiple anchor PP complement: Tnx01VPnx1. In
+truth, I fail to see the purpose of the Passive frame in VerbNet.
+</note>
+
+
+<primary="Possessor Subject Possessor-Attribute Factoring Alternation" secondary="" xtag="Tnx0Vnx1pnx2" name="Ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Possessor Subject Possessor-Attribute Factoring Alternation" secondary="Genitive" xtag="Tnx0Vnx1" name="Transitive">            
+<note>
+</note>
+
+
+<primary="Possessor Subject Possessor-Attribute Factoring Alternation" secondary="Attribute variant" xtag="Tnx0V" name="Intransitive">
+<note>
+</note>
+
+
+<primary="Possessor Subject Possessor-Attribute Factoring Alternation" secondary="with Extent" xtag="Tnx0V" name="Intransitive">
+<note>
+</note>
+
+
+<primary="Possessor Subject Possessor-Attribute Factoring Alternation" secondary="with PP Extent" xtag="Tnx0V" name="Intransitive">
+<note>
+</note>
+
+
+<primary="PRO-Arb Object Alternation" secondary="" xtag="Tnx0V" name="Intransitive">                
+<note>
+</note>
+
+
+<primary="Raw Material Subject Alternation"  secondary="" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Reflexive of Appearance Alternation"  secondary="" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Resultative"  secondary="" xtag="TRnx0Vnx1A2" name="Resultatives with V (transitive and intransitive), A anchors">
+<note>
+</note>
+
+
+<primary="Resultative"  secondary="from intransitive" xtag="TRnx0Vnx1A2" name="Resultatives with V (transitive and intransitive), A anchors">
+<note>
+</note>
+
+
+<primary="Resultative"  secondary="from transitive" xtag="TRnx0Vnx1A2" name="Resultatives with V (transitive and intransitive), A anchors">
+<note>
+</note>
+
+
+<primary="Resultative"  secondary="from inchoative" xtag="TRnx0Vnx1A2" name="Resultatives with V (transitive and intransitive), A anchors">
+<note>
+</note>
+
+
+<primary="Resultative"  secondary="from causative" xtag="TRnx0Vnx1A2" name="Resultatives with V (transitive and intransitive), A anchors">
+<note>
+</note>
+
+
+<primary="Resultative"  secondary="from induced action" xtag="TRnx0Vnx1A2" name="Resultatives with V (transitive and intransitive), A anchors">
+<note>
+</note>
+
+
+<primary="Sentential Complement"  secondary="" xtag="Tnx0Vs1" name="Sentential Complement">
+<note>
+In XTAG, corresponds to verbs thattake both and NP and a sentential complement,
+which maybe either indicative or infinitive. NP V NP Complement. Example: Beth
+told Jim that is was his turn.
+</note>
+
+
+<primary="Sentential Complement"  secondary="+ Recipient Object" xtag="Tnx0Vnx1s2" name="Sentential Complement with NP">
+<note>
+</note>
+
+
+<primary="Sentential Complement"  secondary="+ Recipient PP" xtag="Tnx0Vs1" name="Sentential Complement">
+<note>
+</note>
+
+
+<primary="Simple Reciprocal Alternation Intransitive"  secondary="prepositional variant" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+</note>
+
+
+<primary="Simple Reciprocal Alternation Intransitive"  secondary="reciprocal variant" xtag="Tnx0V" name="Intransitive">
+<note>
+</note>
+
+
+<primary="Simple Reciprocal Alternation Transitive"  secondary="prepositional variant" xtag="Tnx0Vnx1pnx2" name="Ditransitive with PP">
+<note>
+Note that while this is the tree family this frame should map to, in most
+cases the VerbNet verbs taking this frame fail to bein this tree family. As an
+example consider the members of amalgamate-22.2-1 that take this frame. For the
+XTAG lexicon, these verbs appear only in Tnx0V (the Intransitive tree family)
+and in Tnx0Vnx1 (the Transitive tree family)
+</note>
+
+
+<primary="Simple Reciprocal Alternation Transitive"  secondary="reciprocal variant" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+<primary="Substance/Source Alternation"  secondary="" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+Note that in VerbNet this frame appears only within the
+substance_emission-43.4 class. These verbs all take the Ergative frame with the
+Theme as Subject and an Intransitive frame with Source as Subject.
+</note>
+
+
+<primary="Sum of Money Subject Alternation"  secondary="Agent Subject" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+Note that I map this frame to two different tree families. This is result of
+VerbNet listing both "The contractor will build you a house for $100,000" and
+"The contractor builds houses for $100,000" as belonging to this frame.
+</note>
+
+
+<primary="Sum of Money Subject Alternation"  secondary="Agent Subject" xtag="Tnx0Vnx2nx1" name="Ditransitive">
+<note>
+Note that I map this frame to two different tree families. This is result of
+VerbNet listing both "The contractor will build you a house for $100,000" and
+"The contractor builds houses for $100,000" as belonging to this frame.
+</note>
+
+
+<primary="Sum of Money Subject Alternation"  secondary="Asset Subject" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+Note that a similar problem to that with the Sum of Money Subject Alternation
+(Agent Subject) frames also arises here. There is no distinction in VerbNet  
+between "$100,000 builds a house" and "$100,000 builds you a house." Could be
+further disambiguated by further refinements to VerbNet.
+</note>
+
+
+<primary="Sum of Money Subject Alternation"  secondary="Asset Subject" xtag="Tnx0Vnx2nx1" name="Ditransitive">
+<note>
+Note that a similar problem to that with the Sum of Money Subject Alternation
+(Agent Subject) frames also arises here. There is no distinction in VerbNet  
+between "$100,000 builds a house" and "$100,000 builds you a house." Could be
+further disambiguated by further refinements to VerbNet.
+</note>
+
+
+<primary="There-insertion"  secondary="" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+</note>
+
+
+<primary="Through/With Alternation"  secondary="Through variant" xtag="Tnx0Vnx1Pnx2" name="Multiple anchor ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Through/With Alternation"  secondary="With variant" xtag="Tnx0Vnx1Pnx2" name="Multiple anchoe ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Together Reciprocal Alternation Intransitive"  secondary="" xtag="Tnx0Vpl" name="Instransitive Verb Particle">
+<note>
+Note that I believe XTAG would mark together as an adjunct describing the
+manner of the action
+</note>
+
+
+<primary="Together Reciprocal Alternation Transitive"  secondary="" xtag="Tnx0Vplnx1" name="Transitive Verb Particle">
+<note>
+</note>
+
+
+<primary="Total Transformation Alternation Intransitive"  secondary="" xtag="Tnx0VPnx1" name="Multiple anchor PP complement">
+<note>
+Note that this specific tree family was chosen over the Tnx0Vpnx1 family
+(Intransitve with PP) on the basis of all verbs that select this VerbNet frame
+bear a non-compositional interpretation between the verb and the prep.
+</note>
+
+
+<primary="Total Transformation Alternation Transitive"  secondary="" xtag="Tnx0Vnx1Pnx2" name="Multiple Anchor ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Basic Transitive"  secondary="" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="+ path PP" xtag="Tnx0Vnx1pnx2" name="Ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Basic Transitive"  secondary="Recipient Object" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="+ against/about-PP" xtag="Tnx0Vnx1pnx2" name="Ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="+ with-PP" xtag="Tnx0Vnx1pnx2" name="Ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="Theme Objec" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="+ Attribute PP" xtag="Tnx0Vnx1pnx2" name="Ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Basic Transitive"  secondary="Location Object" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Basic Transitive"  secondary="Theme Object" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="+ Destination PP" xtag="Tnx0Vnx1pnx2" name="Ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="+ Source PP" xtag="Tnx0Vnx1pnx2" name="Ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Basic Transitive"  secondary="causative" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="+ Instrument PP" xtag="Tnx0Vnx1pnx2" name="Ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="+ Asset + Cause PP" xtag="Tnx0Vnx2nx1" name="Ditransitive">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="+ Asset" xtag="Tnx0Vnx2nx1" name="Ditransitive">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="Recipient Object" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="Substance Object" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="Cognate object" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="+ Goal PP" xtag="Tnx0Vnx1pnx2" name="Ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="+ Source PP + Goal PP" xtag="Tnx0Vnx1pnx2" name="Ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="+ Source PP" xtag="Tnx0Vnx1pnx2" name="Ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="+ Theme PP" xtag="Tnx0Vnx1pnx2" name="Ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="Destination Object" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Basic Transitive"  secondary="with accompanied motion" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="+ Source PP + Goal PP" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="+ of-PP" xtag="Tnx0Vnx1pnx2" name="Ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="+ out of-PP" xtag="Tnx0Vnx1pnx2" name="Ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="dropped Theme" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="+ Location PP" xtag="Tnx0Vnx1pnx2" name="Ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="+ Recipient PP" xtag="Tnx0Vnx1pnx2" name="Ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="Attribute Object" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="+ Material PP" xtag="Tnx0Vnx1pnx2" name="Ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="Body-part or reflexive Object" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="Reflexive variant" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="Particle up" xtag="Tnx0Vplnx1" name="Transitive Verb Particle">
+<note>
+</note>
+
+
+<primary="Basic Transitive"  secondary="without accompanied motion" xtag="Tnx0Vnx1" name="Transitive">      
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="+ Predicate" xtag="Tnx0Vnx2nx1" name="Ditransitive">                  
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="+ for-PP" xtag="Tnx0Vnx1pnx2" name="Ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="+ in-PP" xtag="Tnx0Vnx1pnx2" name="Ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="+ here/there" xtag="Tnx0Vnx1" name="Transitive">                  
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="+ locative PP" xtag="Tnx0Vnx1pnx2" name="Ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="+ from-PP" xtag="Tnx0Vnx1pnx2" name="Ditransitive with PP">    
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="implicit Theme" xtag="Tnx0Vnx1" name="Transitive">                  
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="Body-part Object" xtag="Tnx0Vnx1" name="Transitive">                  
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="+ Topic PP" xtag="Tnx0Vnx1pnx2" name="Ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="Recipient Object, ellided Topic" xtag="Tnx0Vnx1" name="Transitive">                  
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="Location object + Theme PP" xtag="Tnx0Vnx1pnx2" name="Ditransitive with PP">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="basically, locative preposition drop of from" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="with accompanied motion and path PP" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="with accompanied motion, no path PP" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="Reaction Object" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="Experiencer Object" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+Note that of the verbs taking this frame in pain-40.8.1 'itch' is not listed
+by XTAG as taking the Tnx0Vnx1 tree family
+</note>
+
+
+<primary="Basic Transitive"  secondary="dropped Instrument" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="+ at-PP" xtag="Tnx0Vnx1pnx2" name="Ditransitive">
+with PP">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="without Destination" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Basic Transitive"  secondary="Topic Object" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="affected Patient1, no Patient2" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="understood Patient2" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="ellided Topic" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Transitive"  secondary="Source Object" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Understood Body-Part Object Alternation"  secondary="" xtag="Tnx0V" name="Intransitive">
+<note>
+Note that XTAG does not include 'floss' as a verb in its grammar
+</note>
+
+
+<primary="Unintentional Interpretation of Object"  secondary="Body_part Object" xtag="Tnx0Vnx1" name="Transitive">
+<note>
+</note>
+
+
+<primary="Unspecified Object Alternation"  secondary="" xtag="Tnx0V" name="Intransitive">
+<note>
+</note>
+
+
+<primary="Unspecified Object Alternation"  secondary="without Theme and Location" xtag="Tnx0V" name="Intransitive">
+<note>
+</note>
+
+
+<primary="Unspecified Object Alternation"  secondary="+ locative PP" xtag="Tnx0Vpnx1" name="Intransitive with PP">
+<note>
+</note>
+
+
+<primary="Unspecified Reflexive Object Alternation"  secondary="" xtag="Tnx0V" name="Intransitive">
+<note>
+</note>
+
+
+<primary="Way Object Alternation"  secondary="" xtag="Tnx0Vplnx2nx1" name="Ditransitive Verb Particle">
+<note>
+</note>
+
+
+<primary="With/against Alternation"  secondary="" xtag="Tnx0Vnx1pnx2" name="Ditransitive with PP">
+<note>
+</note>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

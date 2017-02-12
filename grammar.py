@@ -87,3 +87,19 @@ class Grammar(object):
             grammar = Grammar.fromxml(xml_filename)
             pickle.dump(grammar, open(grammar_file, 'wb'))
             return grammar
+
+if __name__ == '__main__':
+    g = Grammar.load()
+    chase = g.get('alphanx0Vnx1')
+    chase.lexicalize('chase')
+    cat = g.get('alphaNXN')
+    cat.lexicalize('cat')
+    dog = g.get('alphaNXN')
+    dog.lexicalize('dog')
+    the = g.get('betaDnx')
+    the.lexicalize('the')
+    chase = chase.substitute(cat, 'NP_0')
+    chase = chase.substitute(dog, 'NP_1')
+    chase = chase.adjoin(the, 'NP_0')
+    chase = chase.adjoin(the, 'NP_1')
+    chase.draw()
